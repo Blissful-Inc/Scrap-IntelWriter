@@ -11,7 +11,7 @@ from tkinter.scrolledtext import ScrolledText
 import tkinter.ttk as ttk
 from scripts import scraper
 
-# region --INIT WINDOW--
+# --INIT WINDOW--
 
 window = Tk()
 window.title('IntelWriter')
@@ -29,9 +29,6 @@ window.config(menu=menubar)
 
 # widgets
 
-def hello():
-    messagebox.showinfo("hello")
-
 def empty_row(quantity):
     for _ in range(quantity):
         empty = Label(window, text=" ", font="none 12", anchor=CENTER).pack()
@@ -39,17 +36,14 @@ def empty_row(quantity):
 def submit_click():
     while True:
         entered_text = subject_entry.get()
-        subject_entry.delete(0, "end")
 
         if entered_text == "":
             print("not accepted")
             break
 
         if entered_text != "":
-            ff = show_edit_window()
-            editspace_hideUI()
-            print("accepted")
-        False
+            show_edit_window(scraper.search_subject(entered_text))
+            break
 
 # search display
 
@@ -68,27 +62,11 @@ submit_button = Button(window, text="submit", font="times 12",
                        height=1, width=6, command=submit_click)
 submit_button.pack(side=TOP)
 
-############
+def hello():
+    messagebox.showinfo("hello")
+    
 
-
-# FUNCTIONS
-
-def editspace_hideUI():
-    enter_label.pack_forget()
-    subject_entry.pack_forget()
-    submit_button.pack_forget()
-    delete_row.pack_forget()
-
-
-
-
-def editspace(entered_text):
-    empty_row(1)
-    article = scraper.search_subject(entered_text)
-    editspace_hideUI()
-    return article
-
-# region --MENU--
+# --MENU--
 
 submenu = Menu(menubar, tearoff=0)
 menubar.add_cascade(label="File", menu=submenu)
@@ -123,7 +101,8 @@ helpmenu.add_separator()
 helpmenu.add_command(label="About...", command=hello)
 
 
-def show_edit_window():
+
+def show_edit_window(article):
     tab_control = ttk.Notebook(window)
     overview = ttk.Frame(tab_control)
     suggest = ttk.Frame(tab_control)  # make frame for suggestions ~~ !! print results
@@ -136,7 +115,7 @@ def show_edit_window():
 
     # if mouse hovers over line / sentence, the string is highlighted, clickable and copied to clipboard, etc
     editArea = ScrolledText(master=overview, wrap=WORD, width=20, height=10, font="times 10")
-    editArea.insert('1.0', editspace(str(subject_entry.get())))
+    editArea.insert('1.0', article)
     editArea.pack(padx=10, pady=10, fill=BOTH, expand=True)
 
     lbl1 = Label(suggest, text="suggest 1").pack()
@@ -153,11 +132,6 @@ def show_edit_window():
 
     notes = Frame(window)
     notes.pack()
-
-
-
-
-
 
 
 

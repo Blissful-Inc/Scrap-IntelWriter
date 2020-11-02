@@ -12,9 +12,10 @@ def search_subject(subject):
         li.append(x.text)
 
     listToStr = '\n'.join([str(elem) for elem in li])
+    #print(listToStr)
 
-    if len(listToStr) < 100:
-        return None
+    # if len(listToStr) < 50:
+    #     return None
 
     return listToStr
 
