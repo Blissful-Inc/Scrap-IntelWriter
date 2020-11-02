@@ -29,9 +29,11 @@ window.config(menu=menubar)
 
 # widgets
 
-def empty_row(quantity):
+def empty_row(frame, quantity):
     for _ in range(quantity):
-        empty = Label(window, text=" ", font="none 12", anchor=CENTER).pack()
+        empty = Label(frame, text=" ", font="none 12", anchor=CENTER).pack()
+
+
 
 def submit_click():
     while True:
@@ -42,35 +44,45 @@ def submit_click():
             break
 
         if entered_text != "":
-            show_edit_window(scraper.search_subject(entered_text))
+            edit_window(scraper.search_subject(entered_text))
             break
 
 # search display
-
-empty_row(1)
-title_label = Label(window, text="INTEL WRITER",
+search_frame = Frame(window)
+empty_row(window, 1)
+title_label = Label(search_frame, text="INTEL WRITER",
                     font="times 12 bold", anchor=CENTER).pack()
-delete_row = Label(window, text=" ", font="times 12 bold", anchor=CENTER)
-delete_row.pack()
-enter_label = Label(window, text="Enter subject:",
+empty_row(search_frame, 1)
+enter_label = Label(search_frame, text="Enter subject:",
                     font="times 12", anchor=CENTER)
 enter_label.pack()
-subject_entry = Entry(window)
+subject_entry = Entry(search_frame)
 subject_entry.pack()
-empty_row(1)
-submit_button = Button(window, text="submit", font="times 12",
+empty_row(search_frame, 1)
+submit_button = Button(search_frame, text="submit", font="times 12",
                        height=1, width=6, command=submit_click)
 submit_button.pack(side=TOP)
+search_frame.pack()
 
 def hello():
     messagebox.showinfo("hello")
+
+def new_file():
+    edit_window.tab_control.destroy()
+    edit_window.overview.destroy()
+    edit_window.suggest.destroy()
+    edit_window.revisions.destroy()
+    #search_frame.pack()
+
+    # python = sys.executable
+    # os.execl(python, python, *sys.argv)
     
 
 # --MENU--
 
 submenu = Menu(menubar, tearoff=0)
 menubar.add_cascade(label="File", menu=submenu)
-submenu.add_command(label="New", command=hello)  # edit from 'newpage'
+submenu.add_command(label="New", command=new_file)  # edit from 'newpage'
 submenu.add_command(label="Open", command=hello)
 submenu.add_command(label="Save", command=hello)
 submenu.add_command(label="Save As...", command=hello)
@@ -102,42 +114,46 @@ helpmenu.add_command(label="About...", command=hello)
 
 
 
-def show_edit_window(article):
-    tab_control = ttk.Notebook(window)
-    overview = ttk.Frame(tab_control)
-    suggest = ttk.Frame(tab_control)  # make frame for suggestions ~~ !! print results
-    revisions = ttk.Frame(tab_control)
+def edit_window(article):
+    edit_window.tab_control = ttk.Notebook(window)
+    edit_window.overview = ttk.Frame(edit_window.tab_control)
+    edit_window.suggest = ttk.Frame(edit_window.tab_control)  # make frame for suggestions ~~ !! print results
+    edit_window.revisions = ttk.Frame(edit_window.tab_control)
 
-    tab_control.add(overview, text='Overview')  # Add the tab
-    tab_control.add(suggest, text='Suggestions')  # Add the tab
-    tab_control.add(revisions, text='Revisions')  # Add the tab
-    tab_control.pack(fill='both', expand='yes')
+    edit_window.tab_control.add(edit_window.overview, text='Overview')  # Add the tab
+    edit_window.tab_control.add(edit_window.suggest, text='Suggestions')  # Add the tab
+    edit_window.tab_control.add(edit_window.revisions, text='Revisions')  # Add the tab
+    edit_window.tab_control.pack(fill='both', expand='yes')
 
     # if mouse hovers over line / sentence, the string is highlighted, clickable and copied to clipboard, etc
-    editArea = ScrolledText(master=overview, wrap=WORD, width=20, height=10, font="times 10")
+    editArea = ScrolledText(master=edit_window.overview, wrap=WORD, width=20, height=10, font="times 10")
     editArea.insert('1.0', article)
     editArea.pack(padx=10, pady=10, fill=BOTH, expand=True)
 
-    lbl1 = Label(suggest, text="suggest 1").pack()
-    lbl2 = Label(suggest, text="suggest 2").pack()
-    lbl3 = Label(suggest, text="suggest 3").pack()
-    lbl4 = Label(suggest, text="suggest 4").pack()
+    lbl1 = Label(edit_window.suggest, text="suggest 1").pack()
+    lbl2 = Label(edit_window.suggest, text="suggest 2").pack()
+    lbl3 = Label(edit_window.suggest, text="suggest 3").pack()
+    lbl4 = Label(edit_window.suggest, text="suggest 4").pack()
 
-    xlbl1 = Label(revisions, text="revisions 1").pack()
-    xlbl2 = Label(revisions, text="revisions 2").pack()
-    xlbl3 = Label(revisions, text="revisions 3").pack()
-    xlbl4 = Label(revisions, text="revisions 4").pack()
+    xlbl1 = Label(edit_window.revisions, text="revisions 1").pack()
+    xlbl2 = Label(edit_window.revisions, text="revisions 2").pack()
+    xlbl3 = Label(edit_window.revisions, text="revisions 3").pack()
+    xlbl4 = Label(edit_window.revisions, text="revisions 4").pack()
 
     # frame ??
 
     notes = Frame(window)
     notes.pack()
 
+    # destroy edit window
+    search_frame.destroy()
+
 
 
 
 # main loop
-window.mainloop()
+def seed():
+    window.mainloop()
 
 # ~ RESOURCES ~
 
